@@ -9,7 +9,8 @@ public enum UserActions {
     DELETE_FILE("5"),
     GO_IN_FOLDER("6"),
     BACK_FOLDER("7"),
-    EXIT("8");
+    READ_TXT_FILE("8"),
+    EXIT("9");
 
     private String value;
 

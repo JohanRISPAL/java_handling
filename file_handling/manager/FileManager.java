@@ -1,10 +1,14 @@
 package file_handling.manager;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class FileManager {
@@ -13,7 +17,7 @@ public class FileManager {
 	private StringBuilder sb;
 
 	public FileManager() {
-		currentPath = "\\test\\";
+		currentPath = "C:\\test\\";
 		this.sb = new StringBuilder();
 	}
 
@@ -89,6 +93,7 @@ public class FileManager {
 			paths = paths.subList(0, paths.size() - 1);
 
 			currentPath = String.join("\\", paths);
+                        currentPath += "\\";
 		}
 
 		if (currentPath.isEmpty()) {
@@ -111,5 +116,42 @@ public class FileManager {
 	public String getCurrentPath() {
 		return currentPath;
 	}
+        
+        public void readFile(int index) throws IOException{
+            File currentFolder = new File(currentPath);
+            List<File> folders = new LinkedList<>();
+
+            for (File file : currentFolder.listFiles()) {
+                            folders.add(file);
+            }
+            
+            String content = "";
+
+            File fileToRead = new File(currentPath + folders.get(index).getName());
+            
+            if(fileToRead.isFile()){
+                try(FileInputStream fis = new FileInputStream(fileToRead)) {
+                    int data;
+
+                    while ((data = fis.read()) >= 0){
+                        content += (char)data; 
+                    }
+
+                    ConsoleManager.getInstance().printLine();
+                    ConsoleManager.getInstance().printToConsole("Contenu du fichier", true);
+                    ConsoleManager.getInstance().printLine();
+
+                    ConsoleManager.getInstance().printToConsole(content, true);
+
+                    ConsoleManager.getInstance().consoleLineBreak();
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ConsoleManager.getInstance().printToConsole("Le fichier choisi n'est pas un fichier", true);
+            }
+            
+        }
 
 }
