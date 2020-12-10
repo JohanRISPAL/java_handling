@@ -10,7 +10,10 @@ public enum UserActions {
     GO_IN_FOLDER("6"),
     BACK_FOLDER("7"),
     READ_TXT_FILE("8"),
-    EXIT("9");
+    WRITE_TXT_FILE("9"),
+    COPY_FILE("10"),
+    TEST_PERF("11"),
+    EXIT("12");
 
     private String value;
 

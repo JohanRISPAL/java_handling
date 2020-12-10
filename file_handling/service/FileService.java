@@ -18,7 +18,7 @@ public class FileService {
         fileManager = new FileManager();
     }
 
-    public void run() {
+    public void run() throws IOException {
         // print the beautiful app title
         printApplicationTitle();
 
@@ -35,7 +35,7 @@ public class FileService {
         done = true;
     }
 
-    private void handleAction(String action) {
+    private void handleAction(String action) throws IOException {
         if (action.equalsIgnoreCase(UserActions.LIST_FILES.getValue())) {
             listFiles();
         }
@@ -62,6 +62,18 @@ public class FileService {
         
         if (action.equalsIgnoreCase(UserActions.READ_TXT_FILE.getValue())) {
             readFile();
+        }
+        
+        if (action.equalsIgnoreCase(UserActions.WRITE_TXT_FILE.getValue())) {
+            writeFile();
+        }
+        
+        if (action.equalsIgnoreCase(UserActions.COPY_FILE.getValue())) {
+            copyFile();
+        }
+        
+        if (action.equalsIgnoreCase(UserActions.TEST_PERF.getValue())) {
+            testPerf();
         }
 
         if (action.equalsIgnoreCase(UserActions.BACK_FOLDER.getValue())) {
@@ -92,6 +104,9 @@ public class FileService {
             ConsoleManager.getInstance().printToConsole(UserActions.GO_IN_FOLDER.getValue() + " - Go into folder", true);
             ConsoleManager.getInstance().printToConsole(UserActions.BACK_FOLDER.getValue() + " - Move back one folder", true);
             ConsoleManager.getInstance().printToConsole(UserActions.READ_TXT_FILE.getValue() + " - Read a txt file", true);
+            ConsoleManager.getInstance().printToConsole(UserActions.WRITE_TXT_FILE.getValue() + " - Write in a txt file", true);
+            ConsoleManager.getInstance().printToConsole(UserActions.COPY_FILE.getValue() + " - Copy a file in another file", true);
+            ConsoleManager.getInstance().printToConsole(UserActions.TEST_PERF.getValue() + " - Test the performance of reading a file", true);
             ConsoleManager.getInstance().printToConsole(UserActions.EXIT.getValue() + " - Exit", true);
 
             // ask user answer
@@ -251,5 +266,53 @@ public class FileService {
         } catch (IOException ex) {
             Logger.getLogger(FileService.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void writeFile() throws IOException {
+        printActionTitle("Write file");
+        
+        int nbFiles = listFiles();
+        
+        int answer;
+        
+        do {
+            ConsoleManager.getInstance().printToConsole("Which file do you want to write ? ", true);
+            answer = ConsoleManager.getInstance().readUserInputInteger();
+        } while(answer < 0 || answer >= nbFiles);
+        
+        fileManager.writeFile(answer);
+    }
+
+    private void copyFile() throws IOException {
+        printActionTitle("Copy file");
+        
+        int nbFiles = listFiles();
+        
+        int answer;
+        int answer2;
+        
+        do {
+            ConsoleManager.getInstance().printToConsole("Which file do you want to copy ? ", true);
+            answer = ConsoleManager.getInstance().readUserInputInteger();
+            ConsoleManager.getInstance().printToConsole("Which file do you want to paste ? ", true);
+            answer2 = ConsoleManager.getInstance().readUserInputInteger();
+        } while(answer < 0 || answer >= nbFiles);
+        
+        fileManager.copyFile(answer, answer2);
+    }
+
+    private void testPerf() {
+        printActionTitle("Time reading file");
+        
+        int nbFiles = listFiles();
+        
+        int answer;
+        
+        do {
+            ConsoleManager.getInstance().printToConsole("Which file do you want to compare ? ", true);
+            answer = ConsoleManager.getInstance().readUserInputInteger();;
+        } while(answer < 0 || answer >= nbFiles);
+        
+        fileManager.testPerf(answer);
     }
 }

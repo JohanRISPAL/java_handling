@@ -1,10 +1,13 @@
 package file_handling.manager;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -133,8 +136,12 @@ public class FileManager {
                 try(FileInputStream fis = new FileInputStream(fileToRead)) {
                     int data;
 
-                    while ((data = fis.read()) >= 0){
-                        content += (char)data; 
+                    if((data = fis.read()) == 0){
+                        content += "Le fichier est vide !";
+                    }else{
+                        while ((data = fis.read()) >= 0){
+                            content += (char)data; 
+                        }
                     }
 
                     ConsoleManager.getInstance().printLine();
@@ -153,5 +160,137 @@ public class FileManager {
             }
             
         }
+
+    public void writeFile(int index) throws IOException {
+            File currentFolder = new File(currentPath);
+            List<File> folders = new LinkedList<>();
+
+            for (File file : currentFolder.listFiles()) {
+                            folders.add(file);
+            }
+            
+            ConsoleManager.getInstance().printToConsole("What do you want to write ?", true);
+            String content = ConsoleManager.getInstance().readUserInput();
+            
+
+            File fileToWrite = new File(currentPath + folders.get(index).getName());
+            
+            if(fileToWrite.isFile()){
+                try(FileOutputStream fop = new FileOutputStream(fileToWrite)) {
+                    byte[] contentInBytes = content.getBytes();
+                    
+                    fop.write(contentInBytes);
+                    fop.flush();
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ConsoleManager.getInstance().printToConsole("Le fichier choisi n'est pas un fichier", true);
+            }
+    }
+
+    public void copyFile(int index, int index2) throws IOException {
+        File currentFolder = new File(currentPath);
+            List<File> folders = new LinkedList<>();
+
+            for (File file : currentFolder.listFiles()) {
+                            folders.add(file);
+            }
+            
+            String content = "";
+
+            File fileToRead = new File(currentPath + folders.get(index).getName());
+            File fileToCopy = new File(currentPath + folders.get(index2).getName());
+            
+            FileOutputStream fop = new FileOutputStream(fileToCopy);
+            
+            if(fileToRead.isFile()){
+                try(FileInputStream fis = new FileInputStream(fileToRead)) {
+                    int data;
+
+                    
+                    while ((data = fis.read()) >= 0){
+                        content += (char)data; 
+                    }
+                    
+                    
+                    byte[] contentInBytes = content.getBytes();
+                    
+                    fop.write(contentInBytes);
+                    fop.flush();
+
+                    ConsoleManager.getInstance().printLine();
+                    ConsoleManager.getInstance().printToConsole("Fichier copié", true);
+                    ConsoleManager.getInstance().printLine();
+
+
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+                } finally{
+                    try{
+                        if (fop != null){
+                            fop.close();
+                        }
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }   
+                }
+            }else{
+                ConsoleManager.getInstance().printToConsole("Le fichier choisi n'est pas un fichier", true);
+            }
+    }
+
+    public void testPerf(int index) throws IOException {
+            File currentFolder = new File(currentPath);
+            List<File> folders = new LinkedList<>();
+
+            for (File file : currentFolder.listFiles()) {
+                            folders.add(file);
+            }
+
+            File fileToRead = new File(currentPath + folders.get(index).getName());
+            
+            Date startFis = new Date();
+            if(fileToRead.isFile()){
+                try(FileInputStream fis = new FileInputStream(fileToRead)) {
+                    int data;
+
+                    while ((data = fis.read()) >= 0){
+                        fis.read();
+                    }
+  
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ConsoleManager.getInstance().printToConsole("Le fichier choisi n'est pas un fichier", true);
+            }
+            Date stopFis = new Date();
+            
+            Date startBis = new Date();
+            if(fileToRead.isFile()){
+                try(FileInputStream fis = new FileInputStream(fileToRead)) {
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    int data;
+
+                    while ((data = bis.read()) >= 0){
+                        bis.read();
+                    }
+  
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                ConsoleManager.getInstance().printToConsole("Le fichier choisi n'est pas un fichier", true);
+            }
+            Date stopBis = new Date();
+            
+            long timeDiffFis = stopFis.getTime() - startFis.getTime();
+            long timeDiffBis = stopBis.getTime() - startBis.getTime();
+            
+            ConsoleManager.getInstance().printToConsole("Durée InputString : " + Long.toString(timeDiffFis), true);
+            ConsoleManager.getInstance().printToConsole("Durée BufferedReader : " + Long.toString(timeDiffBis), true);
+    }
 
 }
