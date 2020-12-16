@@ -1,11 +1,16 @@
 package file_handling.manager;
 
 import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
@@ -291,6 +296,54 @@ public class FileManager {
             
             ConsoleManager.getInstance().printToConsole("Durée InputString : " + Long.toString(timeDiffFis), true);
             ConsoleManager.getInstance().printToConsole("Durée BufferedReader : " + Long.toString(timeDiffBis), true);
+    }
+
+    public void writeType(int index) throws IOException {
+        File currentFolder = new File(currentPath);
+            List<File> folders = new LinkedList<>();
+
+            for (File file : currentFolder.listFiles()) {
+                            folders.add(file);
+            }
+
+            File file = new File(currentPath + folders.get(index).getName());
+            
+        if(file.isFile()){
+             try(FileInputStream fis = new FileInputStream(file);
+                     FileOutputStream fop = new FileOutputStream(file);
+                     DataInputStream ois = new DataInputStream(fis); 
+                     DataOutputStream oop = new DataOutputStream(fop)
+                     ) {
+                 
+                 
+                char myChar = 'a';
+                double myDouble = 42.42;
+                int myInt = 5;
+                boolean myBool = true;
+                
+                oop.writeChar(myChar);
+                oop.writeDouble(myDouble);
+                oop.writeInt(myInt);
+                oop.writeBoolean(myBool);
+                
+                oop.flush();
+                
+                int data;
+                String content = "";
+                
+                char myCharRead = ois.readChar();
+                double myDoubleRead = ois.readDouble();
+                int myIntRead = ois.readInt();
+                boolean myBoolRead = ois.readBoolean();
+
+                ConsoleManager.getInstance().printToConsole("Contenu du fichier : " + myCharRead + myDoubleRead + myIntRead + myBoolRead, true);
+
+             } catch (FileNotFoundException ex) {
+                 Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+             }
+         }else{
+             ConsoleManager.getInstance().printToConsole("Le fichier choisi n'est pas un fichier", true);
+         } 
     }
 
 }

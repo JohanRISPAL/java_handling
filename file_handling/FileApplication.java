@@ -3,8 +3,10 @@
  */
 package file_handling;
 
+import file_handling.manager.ApplicationManager;
 import file_handling.manager.ConsoleManager;
 import file_handling.service.FileService;
+import java.io.IOException;
 
 import java.util.*;
 
@@ -17,15 +19,15 @@ public class FileApplication {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ConsoleManager.getInstance().printToConsole(FileApplication.class.getName() + " - Start", true);
 		ConsoleManager.getInstance().consoleLineBreak();
 
 		// instantiate application
-		FileService applicationService = new FileService();
+		ApplicationManager applicationManager = new ApplicationManager();
 
 		// launch application
-		applicationService.run();
+		applicationManager.run();
 
 		ConsoleManager.getInstance().consoleLineBreak();
 		ConsoleManager.getInstance().printToConsole(FileApplication.class.getName() + " - End", true);

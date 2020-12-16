@@ -13,7 +13,8 @@ public enum UserActions {
     WRITE_TXT_FILE("9"),
     COPY_FILE("10"),
     TEST_PERF("11"),
-    EXIT("12");
+    WRITE_TYPE("12"),
+    EXIT("13");
 
     private String value;
 

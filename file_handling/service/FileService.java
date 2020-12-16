@@ -2,6 +2,7 @@ package file_handling.service;
 
 import file_handling.manager.ConsoleManager;
 import file_handling.manager.FileManager;
+import file_handling.manager.ClubManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,8 @@ public class FileService {
 
         done = true;
     }
+    
+    
 
     private void handleAction(String action) throws IOException {
         if (action.equalsIgnoreCase(UserActions.LIST_FILES.getValue())) {
@@ -75,6 +78,10 @@ public class FileService {
         if (action.equalsIgnoreCase(UserActions.TEST_PERF.getValue())) {
             testPerf();
         }
+        
+        if (action.equalsIgnoreCase(UserActions.WRITE_TYPE.getValue())) {
+            writeType();
+        }
 
         if (action.equalsIgnoreCase(UserActions.BACK_FOLDER.getValue())) {
             back();
@@ -107,6 +114,7 @@ public class FileService {
             ConsoleManager.getInstance().printToConsole(UserActions.WRITE_TXT_FILE.getValue() + " - Write in a txt file", true);
             ConsoleManager.getInstance().printToConsole(UserActions.COPY_FILE.getValue() + " - Copy a file in another file", true);
             ConsoleManager.getInstance().printToConsole(UserActions.TEST_PERF.getValue() + " - Test the performance of reading a file", true);
+            ConsoleManager.getInstance().printToConsole(UserActions.WRITE_TYPE.getValue() + " - Write primitive type in a file", true);
             ConsoleManager.getInstance().printToConsole(UserActions.EXIT.getValue() + " - Exit", true);
 
             // ask user answer
@@ -301,7 +309,7 @@ public class FileService {
         fileManager.copyFile(answer, answer2);
     }
 
-    private void testPerf() {
+    private void testPerf() throws IOException {
         printActionTitle("Time reading file");
         
         int nbFiles = listFiles();
@@ -315,4 +323,20 @@ public class FileService {
         
         fileManager.testPerf(answer);
     }
+
+    private void writeType() throws IOException {
+        printActionTitle("Write primitive type");
+        
+        int nbFiles = listFiles();
+        
+        int answer;
+        
+        do {
+            ConsoleManager.getInstance().printToConsole("Which file do you want to write and read ? ", true);
+            answer = ConsoleManager.getInstance().readUserInputInteger();;
+        } while(answer < 0 || answer >= nbFiles);
+        
+        fileManager.writeType(answer);
+    }
+
 }
